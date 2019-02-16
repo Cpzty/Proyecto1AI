@@ -46,14 +46,13 @@ col3 = []
 col4 = []
 
 def fill_cols():
-    column_traverse = 0
     global col1,col2,col3,col4,sudoku
-    for i in range(4):
-        col1 = col1 + sudoku[column_traverse:column_traverse+1]
-        col2 = col2 + sudoku[column_traverse+1:column_traverse+2]
-        col3 = col3 + sudoku[column_traverse+2:column_traverse+3]
-        col4 = col4 + sudoku[column_traverse+3:column_traverse+4]
-        column_traverse += 4
+    
+    col1 = (sudoku[0:1]+ sudoku[4:5] + sudoku[8:9]+ sudoku[12:13])
+    col2 = (sudoku[1:2]+ sudoku[5:6] + sudoku[9:10]+ sudoku[13:14])
+    col3 = (sudoku[2:3]+ sudoku[6:7] + sudoku[10:11]+ sudoku[14:15])
+    col4 = (sudoku[3:4]+ sudoku[7:8] + sudoku[11:12]+ sudoku[15:16])
+        
 
 #nodos
 
@@ -157,63 +156,70 @@ def solve():
          #   sudoku[action_keys[i]] = ordered_actions[action_keys[i]][randint(0,len(ordered_actions[action_keys[i]])-1)]
 
 
+while(0 in sudoku and full_counter<16):
+    #llenar filas columnas y nodos
+    fill_rows()
+    fill_cols()
+    create_update_nodes()
+    #frontier
+    fill_frontier()
+    #actions
+    fill_actions()
+    #keys
+    actionkeys()
+    solve()
+    print(sudoku)
+    #terminan las acciones de llenado
+    #vaciar
+    #vaciar diccionario nodos
+    nodes.clear()
+    #vaciar nodos
+    node1.clear()
+    node2.clear()
+    node3.clear()
+    node4.clear()
+    node5.clear()
+    node6.clear()
+    node7.clear()
+    node8.clear()
+    node9.clear()
+    node10.clear()
+    node11.clear()
+    node12.clear()
+    node13.clear()
+    node14.clear()
+    node15.clear()
+    node16.clear()
+
+    #vaciar frontera y acciones y values_present
+    values_present.clear()
+    frontier.clear()
+    actions.clear()
+    for i in range(16):
+        frontier.append([])
+        values_present.append([])
+
+    #vaciar action_keys y ordered actions
+    action_keys.clear()
+    ordered_actions.clear()
+    full_counter += 1
+
+#fin del while
 
 #llenar filas columnas y nodos
-fill_rows()
-fill_cols()
-create_update_nodes()
+#fill_rows()
+#fill_cols()
+#create_update_nodes()
+
 #frontier
-fill_frontier()
-#actions
-fill_actions()
-#keys
-actionkeys()
-solve()
-print(sudoku)
-#terminan las acciones de llenado
-#vaciar
-#vaciar diccionario nodos
-nodes.clear()
-#vaciar nodos
-node1.clear()
-node2.clear()
-node3.clear()
-node4.clear()
-node5.clear()
-node6.clear()
-node7.clear()
-node8.clear()
-node9.clear()
-node10.clear()
-node11.clear()
-node12.clear()
-node13.clear()
-node14.clear()
-node15.clear()
-node16.clear()
-
-#vaciar frontera y acciones
-frontier.clear()
-actions.clear()
-for i in range(16):
-    frontier.append([])
-
-#vaciar action_keys y ordered actions
-action_keys.clear()
-ordered_actions.clear()
-
-#llenar filas columnas y nodos
-fill_rows()
-
-fill_cols()
-create_update_nodes()
-#frontier
-fill_frontier()
+#fill_frontier()
 #print(frontier)
 #actions
-fill_actions()
+#fill_actions()
 #keys
-actionkeys()
-solve()
+#actionkeys()
+#print(action_keys)
+#print(ordered_actions)
+#solve()
 #print(sudoku)
 
