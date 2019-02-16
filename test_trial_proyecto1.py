@@ -1,14 +1,21 @@
+from collections import OrderedDict
+from random import randint
 #variables globales
 Entrada = ""
 Entrada = ".4.13.4.1..4.21."
 L = list(Entrada)
 sudoku = [0 if x=="." else int(x)for x in Entrada]
-
-frontier = [[]]
-values_present = [[]]
+proto_sudoku = sudoku[:]
+frontier = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+values_present = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
 cleaner = []
 current_node = 0
 possible_values = [1,2,3,4]
+nodes = {}
+actions = {}
+ordered_actions = {}
+action_keys = []
+visitados = []
 #for i in range(4):
     #filas
    # nodes[0].append(sudoku[i])
@@ -84,20 +91,56 @@ def create_update_nodes():
     node14.append(row4 + col2[:3] + row3[0:1])
     node15.append(row4 + col3[:3] + row3[3:4])
     node16.append(row4 + col4[:3] + row3[2:3])
+
+    nodes[0]  = node1
+    nodes[1]  = node2
+    nodes[2]  = node3
+    nodes[3]  = node4
+    nodes[4]  = node5
+    nodes[5]  = node6
+    nodes[6]  = node7
+    nodes[7]  = node8
+    nodes[8]  = node9
+    nodes[9]  = node10
+    nodes[10] = node11
+    nodes[11] = node12
+    nodes[12] = node13
+    nodes[13] = node14
+    nodes[14] = node15
+    nodes[15] = node16
     
 create_update_nodes()
 
 #frontera
 
-for i in range(1,17):
-    print("node"+ str(i))
-for value in nodes[0]:
-    if value not in values_present[0] and value != 0:
-        values_present[0].append(value)
+for i in range(16):    
+    for value in nodes[i]:
+        if value not in values_present[i] and value != 0:
+            values_present[i].append(value)
+            frontier[i].append(list(set(possible_values)-set(values_present[i][0])))
+#print(frontier)
+for i in range(16):
+    if(sudoku[i]==0):
+        actions[i] = frontier[i][0]
+        
+#print(len(actions[2]))
+#print(len([1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]))
+
+#ordenar de menor a mayor las acciones
+ordered_actions=OrderedDict(sorted(actions.items(), key = lambda item: len(item[1]),reverse = False))
+#resolver sudoku
+action_keys = list(ordered_actions.keys())
+print(action_keys)
+print(ordered_actions)
+for i in range(len(action_keys)):
+    if(len(ordered_actions[action_keys[i]]) ==1):
+        sudoku[action_keys[i]] = ordered_actions[action_keys[i]].pop()
+    elif(len(ordered_actions[action_keys[i]])>1):
+        sudoku[action_keys[i]] = ordered_actions[action_keys[i]][randint(0,len(ordered_actions[action_keys[i]])-1)]
+    
 print(sudoku)
-print(nodes)        
+#print(ordered_actions[action_keys[-2]][0])
 #numeros disponibles
-frontier[0].append((set(possible_values)-set(values_present[0])).pop())
-print(frontier[0])
+
 
 
