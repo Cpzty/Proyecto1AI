@@ -205,6 +205,8 @@ while(0 in sudoku and full_counter<16):
     full_counter += 1
 
 #fin del while
+if(0 in sudoku):
+    print("no es posible resolver este sudoku")
 
 #llenar filas columnas y nodos
 #fill_rows()
