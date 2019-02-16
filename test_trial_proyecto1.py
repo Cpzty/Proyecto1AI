@@ -15,7 +15,8 @@ nodes = {}
 actions = {}
 ordered_actions = {}
 action_keys = []
-visitados = []
+visitados = {}
+full_counter = 0
 #for i in range(4):
     #filas
    # nodes[0].append(sudoku[i])
@@ -31,26 +32,31 @@ row1 = []
 row2 = []
 row3 = []
 row4 = []
-row1 = sudoku[0:4]
-row2 = sudoku[4:8]
-row3 = sudoku[8:12]
-row4 = sudoku[12:16]
+def fill_rows():
+    global row1,row2,row3,row4,sudoku
+    row1 = sudoku[0:4]
+    row2 = sudoku[4:8]
+    row3 = sudoku[8:12]
+    row4 = sudoku[12:16]
+    
 #cols
 col1 = []
 col2 = []
 col3 = []
 col4 = []
-column_traverse = 0
 
-for i in range(4):
-    col1 = col1 + sudoku[column_traverse:column_traverse+1]
-    col2 = col2 + sudoku[column_traverse+1:column_traverse+2]
-    col3 = col3 + sudoku[column_traverse+2:column_traverse+3]
-    col4 = col4 + sudoku[column_traverse+3:column_traverse+4]
-    column_traverse += 4
+def fill_cols():
+    column_traverse = 0
+    global col1,col2,col3,col4,sudoku
+    for i in range(4):
+        col1 = col1 + sudoku[column_traverse:column_traverse+1]
+        col2 = col2 + sudoku[column_traverse+1:column_traverse+2]
+        col3 = col3 + sudoku[column_traverse+2:column_traverse+3]
+        col4 = col4 + sudoku[column_traverse+3:column_traverse+4]
+        column_traverse += 4
 
 #nodos
-#si hago un append normal tengo que usar un contador que corra la posicion inicial para que inicie sobre el cuadro del nodo.
+
 node1 =  []
 node2 =  []
 node3 =  []
@@ -69,7 +75,7 @@ node15 = []
 node16 = []
 
 def create_update_nodes():
-    global node1,node2,node3,node4,node5,node6,node7,node8,node9,node10,node11,node12,node13,node14,node15,node16
+    global node1,node2,node3,node4,node5,node6,node7,node8,node9,node10,node11,node12,node13,node14,node15,node16,nodes
     
     node1.append(row1 + col1[1:] + col2[1:2])
     node2.append(row1 + col2[1:] + col1[1:2])
@@ -108,39 +114,106 @@ def create_update_nodes():
     nodes[13] = node14
     nodes[14] = node15
     nodes[15] = node16
-    
-create_update_nodes()
+
 
 #frontera
+def fill_frontier():
+    global frontier, nodes, values_present
+    for i in range(16):    
+        for value in nodes[i]:
+            if value not in values_present[i] and value != 0:
+                values_present[i].append(value)
+                frontier[i].append(list(set(possible_values)-set(values_present[i][0])))
 
-for i in range(16):    
-    for value in nodes[i]:
-        if value not in values_present[i] and value != 0:
-            values_present[i].append(value)
-            frontier[i].append(list(set(possible_values)-set(values_present[i][0])))
 #print(frontier)
-for i in range(16):
-    if(sudoku[i]==0):
-        actions[i] = frontier[i][0]
+def fill_actions():
+    global sudoku,actions,frontier
+    for i in range(16):
+        if(sudoku[i]==0):
+            actions[i] = frontier[i][0]
+
+
         
 #print(len(actions[2]))
 #print(len([1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]))
 
 #ordenar de menor a mayor las acciones
-ordered_actions=OrderedDict(sorted(actions.items(), key = lambda item: len(item[1]),reverse = False))
+def actionkeys():
+    global action_keys,ordered_actions
+    ordered_actions = OrderedDict(sorted(actions.items(), key = lambda item: len(item[1]),reverse = False))
+    action_keys = list(ordered_actions.keys())
+
+
+#print(action_keys)
+#print(ordered_actions)
+#eliminar opciones con 1 posibilidad
 #resolver sudoku
-action_keys = list(ordered_actions.keys())
-print(action_keys)
-print(ordered_actions)
-for i in range(len(action_keys)):
-    if(len(ordered_actions[action_keys[i]]) ==1):
-        sudoku[action_keys[i]] = ordered_actions[action_keys[i]].pop()
-    elif(len(ordered_actions[action_keys[i]])>1):
-        sudoku[action_keys[i]] = ordered_actions[action_keys[i]][randint(0,len(ordered_actions[action_keys[i]])-1)]
-    
+def solve():
+    global action_keys,ordered_actions,sudoku
+    for i in range(len(action_keys)):
+        if(len(ordered_actions[action_keys[i]]) ==1):
+            sudoku[action_keys[i]] = ordered_actions[action_keys[i]].pop()
+        #elif(len(ordered_actions[action_keys[i]])>1):
+         #   sudoku[action_keys[i]] = ordered_actions[action_keys[i]][randint(0,len(ordered_actions[action_keys[i]])-1)]
+
+
+
+#llenar filas columnas y nodos
+fill_rows()
+fill_cols()
+create_update_nodes()
+#frontier
+fill_frontier()
+#actions
+fill_actions()
+#keys
+actionkeys()
+solve()
 print(sudoku)
-#print(ordered_actions[action_keys[-2]][0])
-#numeros disponibles
+#terminan las acciones de llenado
+#vaciar
+#vaciar diccionario nodos
+nodes.clear()
+#vaciar nodos
+node1.clear()
+node2.clear()
+node3.clear()
+node4.clear()
+node5.clear()
+node6.clear()
+node7.clear()
+node8.clear()
+node9.clear()
+node10.clear()
+node11.clear()
+node12.clear()
+node13.clear()
+node14.clear()
+node15.clear()
+node16.clear()
 
+#vaciar frontera y acciones
+frontier.clear()
+actions.clear()
+for i in range(16):
+    frontier.append([])
 
+#vaciar action_keys y ordered actions
+action_keys.clear()
+ordered_actions.clear()
+
+#llenar filas columnas y nodos
+fill_rows()
+
+fill_cols()
+create_update_nodes()
+#frontier
+fill_frontier()
+#print(frontier)
+#actions
+fill_actions()
+#keys
+actionkeys()
+solve()
+#print(sudoku)
 
