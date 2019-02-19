@@ -1,5 +1,6 @@
 import sys
 from random import randint
+from copy import deepcopy
 from collections import OrderedDict
 
 #entrada = sys.argv[1]
@@ -17,6 +18,10 @@ punishup = 0
 punishdown = 0
 punishleft  = 0
 punishright = 0
+move_upstate = [[],[],[],[]]
+move_downstate = [[],[],[],[]]
+move_rightstate = [[],[],[],[]]
+move_leftstate = [[],[],[],[]]
 ##def calculo_heuristica(estado):
 ##    heuristica = 0
 ##    counter = 1
@@ -57,13 +62,15 @@ def find_empty_space(estado):
     return y_and_x
 
 def move_up(estado):
-    global fila_puntero,columna_puntero
+    global fila_puntero,columna_puntero, estado_inicial,move_upstate
     fila_posicionfila = find_empty_space(estado_inicial)
     fila_puntero = fila_posicionfila[1]
     columna_puntero = fila_posicionfila[0]
+    move_upstate = deepcopy(estado)    
     if(columna_puntero !=0):
-        estado[columna_puntero][fila_puntero], estado[columna_puntero-1][fila_puntero] = estado[columna_puntero-1][fila_puntero], estado[columna_puntero][fila_puntero]
-        return estado
+        move_upstate[columna_puntero][fila_puntero], move_upstate[columna_puntero-1][fila_puntero] = move_upstate[columna_puntero-1][fila_puntero], move_upstate[columna_puntero][fila_puntero]
+        #print("nani: " + str(columna_puntero-1)+"nani2: " +str(fila_puntero))
+        print(move_upstate)
     else:
         move = False
         return move
@@ -71,62 +78,63 @@ def move_up(estado):
     
 
 def move_down(estado):
-    global fila_puntero,columna_puntero
+    global fila_puntero,columna_puntero, estado_inicial, move_downstate
     fila_posicionfila = find_empty_space(estado_inicial)
     fila_puntero = fila_posicionfila[1]
     columna_puntero = fila_posicionfila[0]
+    move_downstate = deepcopy(estado)
+    print(move_downstate)
     if(columna_puntero !=3):
-        estado[columna_puntero][fila_puntero], estado[columna_puntero+1][fila_puntero] = estado[columna_puntero+1][fila_puntero], estado[columna_puntero][fila_puntero]
-        return estado
+        move_downstate[columna_puntero][fila_puntero], move_downstate[columna_puntero+1][fila_puntero] = move_downstate[columna_puntero+1][fila_puntero], move_downstate[columna_puntero][fila_puntero]
     else:
         move = False
         return move
 
 def move_right(estado):
-    global fila_puntero,columna_puntero
+    global fila_puntero,columna_puntero, estado_inicial, move_rightstate
     fila_posicionfila = find_empty_space(estado_inicial)
     fila_puntero = fila_posicionfila[1]
     columna_puntero = fila_posicionfila[0]
+    move_rightstate = deepcopy(estado)
     if(fila_puntero !=3):
-        estado[columna_puntero][fila_puntero], estado[columna_puntero][fila_puntero+1] = estado[columna_puntero][fila_puntero+1], estado[columna_puntero][fila_puntero]
-        return estado
+        move_rightstate[columna_puntero][fila_puntero], move_rightstate[columna_puntero][fila_puntero+1] = move_rightstate[columna_puntero][fila_puntero+1], move_rightstate[columna_puntero][fila_puntero]
     else:
         move = False
         return move
 
 def move_left(estado):
-    global fila_puntero,columna_puntero
+    global fila_puntero,columna_puntero, estado_inicial, move_leftstate
     fila_posicionfila = find_empty_space(estado_inicial)
     fila_puntero = fila_posicionfila[1]
     columna_puntero = fila_posicionfila[0]
-    
+    move_leftstate = deepcopy(estado)
     if(fila_puntero !=0):
-        estado[columna_puntero][fila_puntero], estado[columna_puntero][fila_puntero-1] = estado[columna_puntero][fila_puntero-1], estado[columna_puntero][fila_puntero]
-        return estado
+        move_leftstate[columna_puntero][fila_puntero], move_leftstate[columna_puntero][fila_puntero-1] = move_leftstate[columna_puntero][fila_puntero-1], move_leftstate[columna_puntero][fila_puntero]
+        
     else:
         move = False
         return move
 def selector():
-    global punishup, punishdown, punishleft, punishright
+    global punishup, punishdown, punishleft, punishright, estado_inicial
     #llamar a todos los moves
-    subestado1 = move_up(estado_inicial)
-    subestado2 = move_down(estado_inicial)
-    subestado3 = move_right(estado_inicial)
-    subestado4 = move_left(estado_inicial)
+    move_up(estado_inicial)
+    move_down(estado_inicial)
+    move_right(estado_inicial)
+    move_left(estado_inicial)
     try:
-        h1 = calculo_heuristica(subestado1) 
+        h1 = calculo_heuristica(move_upstate) 
     except:
         h1 = 700
     try:
-        h2 = calculo_heuristica(subestado2) 
+        h2 = calculo_heuristica(move_downstate) 
     except:
         h2 = 700
     try:
-        h3 = calculo_heuristica(subestado3) 
+        h3 = calculo_heuristica(move_rightstate) 
     except:
         h3 = 700
     try:
-        h4 = calculo_heuristica(subestado4) 
+        h4 = calculo_heuristica(move_leftstate) 
     except:
         h4 = 700
     hes = {}
@@ -138,6 +146,10 @@ def selector():
     print(h2)
     print(h3)
     print(h4)
+    #print(move_upstate)
+    #print(move_downstate)
+    #print(move_rightstate)
+    #print(move_leftstate)
     return hes
 
 countup = 0
@@ -150,8 +162,8 @@ while(estado_inicial != goal_state):
     lmao = selector()
     ordered_hes = OrderedDict(sorted(lmao.items(), key = lambda item: item[1],reverse = False))
     action_keys = list(ordered_hes.keys())    
-    if(action_keys[0] == 1):
-        move_up(estado_inicial)
+    if(action_keys[0] == 1 and ordered_hes[1] != ordered_hes[2] and ordered_hes[1] != ordered_hes[3] and ordered_hes[1] != ordered_hes[4]  ):
+        estado_inicial = deepcopy(move_upstate)
 ##        countup +=1
 ##        if(countup % randint(1,4) == 0 or countup == 5):
 ##            punishup = 1
@@ -159,8 +171,8 @@ while(estado_inicial != goal_state):
 ##        else:
 ##            punishup = 0
         #punishdown = randint(1,2)
-    elif(action_keys[0] == 2):
-        move_down(estado_inicial)
+    elif(action_keys[0] == 2 and ordered_hes[2] != ordered_hes[1] and ordered_hes[2] != ordered_hes[3] and ordered_hes[2] != ordered_hes[4]  ):
+        estado_inicial = deepcopy(move_downstate)
 ##        countdown +=1
 ##        if(countdown % randint(1,4) == 0 or countdown == 5):
 ##            punishdown = 1
@@ -169,8 +181,8 @@ while(estado_inicial != goal_state):
 ##            punishdown = 0
         
         
-    elif(action_keys[0] == 3):
-        move_right(estado_inicial)
+    elif(action_keys[0] == 3 and ordered_hes[3] != ordered_hes[1] and ordered_hes[3] != ordered_hes[2] and ordered_hes[3] != ordered_hes[4]  ):
+        estado_inicial = deepcopy(move_rightstate)
 ##        countright +=1
 ##        if(countright % randint(1,4) == 0 or countright == 5):
 ##            punishright = 1
@@ -179,8 +191,8 @@ while(estado_inicial != goal_state):
 ##            punishright = 0
         
         #punishleft = randint(1,2)
-    elif(action_keys[0] == 4):
-        move_left(estado_inicial)
+    elif(action_keys[0] == 4 and ordered_hes[4] != ordered_hes[1] and ordered_hes[4] != ordered_hes[2] and ordered_hes[4] != ordered_hes[3]  ):
+        estado_inicial = deepcopy(move_leftstate)
         #punishleft = 1
 ##        countleft +=1
 ##        if(countleft % randint(1,4) == 0 or countleft == 5):
@@ -188,5 +200,14 @@ while(estado_inicial != goal_state):
 ##            countdown = 0
 ##        else:
 ##            punishleft = 0
-        
-    print(ordered_hes)
+    else:
+        chewbacca = randint(1,4)
+        if(chewbacca == 1):
+            estado_inicial = deepcopy(move_upstate)
+        elif(chewbacca == 2):
+            estado_inicial = deepcopy(move_downstate)
+        elif(chewbacca == 3):
+            estado_inicial = deepcopy(move_leftstate)
+        else:
+            estado_inicial = deepcopy(move_rightstate)
+    print(estado_inicial)
