@@ -38,7 +38,7 @@ def astar(maze,start,end):
             path = []
             current = current_node
             while(current is not None):
-                path.append(current_position)
+                path.append(current.position)
                 current = current.parent
             #camino al revez
             return path[::-1]
@@ -53,7 +53,7 @@ def astar(maze,start,end):
             if maze[node_position[0]][node_position[1]] != 0:
                 continue
             #nuevo nodo
-            new_node = Node(current_node,current_position)
+            new_node = Node(current_node,node_position)
             #agregar nuevo nodo a hijos
             children.append(new_node)
         #loop en los hijos
@@ -62,4 +62,32 @@ def astar(maze,start,end):
             for closed_child in closed_list:
                 if child == closed_child:
                     continue
+            #f,g,h
+            child.g = current_node.g + 1
+            child.h = ((child.position[0] - end_node.position[0])**2) + ((child.position[1] - end_node.position[1])**2)
+            child.f = child.g + child.h
+            #hijo ya en lista abierta
+            for open_node in open_list:
+                if child == open_node and child.g > open_node.g:
+                    continue
+            #agregar hijo a lista abierta
+            open_list.append(child)
+
+def main():
+    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+    start = (0,0)
+    end = (7,6)
+    path = astar(maze,start,end)
+    print(path)
+main()
         
