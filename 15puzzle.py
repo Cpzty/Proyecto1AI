@@ -47,10 +47,11 @@ def moves(estado):
 
 
 def fifteenpuzzle(start,end):
+    #frontera posee la heuristica y el estado
     frontier = [[heuristica_manhattan(start), start]] 
     recorridos = []
     nodos_recorridos=0
-    while frontier:
+    while frontier and nodos_recorridos<10000:
         i = 0
         for j in range(1, len(frontier)):
             if frontier[i][0] > frontier[j][0]:
@@ -58,7 +59,7 @@ def fifteenpuzzle(start,end):
         path = frontier[i]
         frontier = frontier[:i] + frontier[i+1:]
         endnode = path[-1]
-        print(endnode)
+        #print(endnode)
         if endnode == end:
             break
         if endnode in recorridos:
@@ -69,9 +70,13 @@ def fifteenpuzzle(start,end):
             newpath = [path[0] + heuristica_manhattan(k) - heuristica_manhattan(endnode)] + path[1:] + [k] 
             frontier.append(newpath)
             recorridos.append(endnode)
-        nodos_recorridos += 1 
-    print ("cantida de nodos visitados:{}".format(nodos_recorridos))
-    #pprint ("caminos explorados: {}".format(path))
+        nodos_recorridos += 1
+    if(nodos_recorridos == 10000):
+        print("es probable que este puzzle no tenga solucion")
+        print ("se visitaron :{} nodos".format(nodos_recorridos))
+    else:
+        print ("cantida de nodos visitados:{}".format(nodos_recorridos))
+        pprint ("caminos explorados: {}".format(path))
     
 def main():
     #entrada = sys.argv[1]
