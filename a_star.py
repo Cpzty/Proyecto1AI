@@ -64,7 +64,16 @@ def astar(maze,start,end):
                     continue
             #f,g,h
             child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0])**2) + ((child.position[1] - end_node.position[1])**2)
+            #child.h = ((child.position[0] - end_node.position[0])**2) + ((child.position[1] - end_node.position[1])**2)
+            for i in range(4):
+                for j in range(4):
+                    value = estado_inicial[i][j]
+                    if(value!= 0):
+                        targetX = (value - 1) / 4
+                        targetY = (value - 1) % 4
+                        dx = i - targetX
+                        dy = j - targetY
+                        child.h += abs(dx) + abs(dy)
             child.f = child.g + child.h
             #hijo ya en lista abierta
             for open_node in open_list:
@@ -74,20 +83,27 @@ def astar(maze,start,end):
             open_list.append(child)
 
 def main():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    entrada = "F21C856B49A73ED."
+    L = list(entrada)
+    #print(L)
+    estado_inicial_array = [0 if x=="." else int(x,16) for x in entrada]
+    estado_inicial = [(estado_inicial_array[0:4]),(estado_inicial_array[4:8]),(estado_inicial_array[8:12]),(estado_inicial_array[12:16])]
+    goal_state = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]]
+
+##    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+##            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     start = (0,0)
     end = (7,6)
-    path = astar(maze,start,end)
+    path = astar(estado_inicial,estado_inicial,goal_state)
     print(path)
 main()
         

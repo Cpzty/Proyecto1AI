@@ -51,8 +51,7 @@ def calculo_heuristica(estado):
    
 
         
-#huehue = calculo_heuristica(estado_inicial)
-#print(huehue)
+
 def find_empty_space(estado):
     for x in range(4):
         for y in range(4):
