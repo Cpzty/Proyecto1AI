@@ -210,3 +210,4 @@ while(estado_inicial != goal_state):
         else:
             estado_inicial = deepcopy(move_rightstate)
     print(estado_inicial)
+    

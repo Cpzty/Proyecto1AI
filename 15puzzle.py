@@ -90,7 +90,7 @@ def fifteenpuzzle_reverse(start,end):
         path = frontier[i]
         frontier = frontier[:i] + frontier[i+1:]
         endnode = path[-1]
-        print(endnode)
+        #print(endnode)
         if endnode == end:
             break
         if endnode in recorridos:
@@ -116,7 +116,7 @@ def fifteenpuzzle(start,end):
     frontier = [[heuristica_manhattan(start), start]] 
     recorridos = []
     nodos_recorridos=0
-    while frontier:
+    while frontier and nodos_recorridos<20000:
         i = 0
         for j in range(1, len(frontier)):
             if frontier[i][0] > frontier[j][0]:
@@ -124,7 +124,7 @@ def fifteenpuzzle(start,end):
         path = frontier[i]
         frontier = frontier[:i] + frontier[i+1:]
         endnode = path[-1]
-        print(endnode)
+        #print(endnode)
         if endnode == end:
             break
         if endnode in recorridos:
@@ -136,7 +136,7 @@ def fifteenpuzzle(start,end):
             frontier.append(newpath)
             recorridos.append(endnode)
         nodos_recorridos += 1
-    if(nodos_recorridos == 10000):
+    if(nodos_recorridos == 20000):
         print("es probable que este puzzle no tenga solucion")
         print ("se visitaron :{} nodos".format(nodos_recorridos))
     else:
@@ -144,21 +144,21 @@ def fifteenpuzzle(start,end):
         pprint ("caminos explorados: {}".format(path))
     
 def main():
-    #entrada = sys.argv[1]
-    entrada = "F21C856B49A73ED."
+    entrada = sys.argv[1]
+    #entrada = "F21C856B49A73ED."
     L = list(entrada)
     estado_inicial_array = [0 if x=="." else int(x,16) for x in entrada]
     estado_inicial = [estado_inicial_array[0:4],estado_inicial_array[4:8],estado_inicial_array[8:12],estado_inicial_array[12:16]]
     goal_state = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]]
     #goal_state = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]]
     #test1 fallo
-    #test1 = [[5,2,3,10],[9,11,15,7],[13,4,1,12],[14,8,0,6]]
+    test1 = [[5,2,3,10],[9,11,15,7],[13,4,1,12],[14,8,0,6]]
     #test2 fallo
     #test2 = [[1,0,3,4],[9,6,2,11],[13,5,10,7],[14,8,15,12]]
     #test3 = [[5,3,6,4],[2,11,8,12],[1,13,10,7],[9,0,14,15]]
     #test4 es resoluble
     test4 = [[1,2,3,4],[5,6,7,8],[0,9,10,11],[12,13,14,15]]
-    puzzle = str(test4)
+    puzzle = str(estado_inicial)
     end = str(goal_state)
     fifteenpuzzle(puzzle,end)
 
@@ -181,6 +181,6 @@ def goalstate2():
     fifteenpuzzle_reverse(puzzle,end)
 
 
-#main()
-goalstate2()
-#and nodos_recorridos<10000
+main()
+#goalstate2()
+
